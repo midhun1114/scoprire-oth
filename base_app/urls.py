@@ -18,7 +18,8 @@ from django.urls import path, include
 from django.conf.urls import url, include
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    url(r'^admin/', include('admin_honeypot.urls', namespace='admin_honeypot')),
+    path('nimda/', admin.site.urls),
     url(r'^accounts/', include('allauth.urls')),
     path('', include('treasurehunt.urls')),
     path('',include('pwa.urls')),

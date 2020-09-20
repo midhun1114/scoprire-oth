@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.sites',
+    'admin_honeypot',
     'treasurehunt',
     'pwa',
     'allauth', 
@@ -164,4 +165,4 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 # STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 
-LOGIN_URL = '/login/'
+LOGIN_URL = '/accounts/google/login'

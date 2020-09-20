@@ -48,28 +48,28 @@ def index(request):
 #     })
 
 
-def user_login(request):
-    if request.user.is_authenticated:
-        return HttpResponseRedirect(reverse('treasurehunt:question'))
-    if request.method == 'POST':
-        username = request.POST.get('username')
-        password = request.POST.get('password')
+# def user_login(request):
+#     if request.user.is_authenticated:
+#         return HttpResponseRedirect(reverse('treasurehunt:question'))
+#     if request.method == 'POST':
+#         username = request.POST.get('username')
+#         password = request.POST.get('password')
 
-        user = authenticate(username=username, password=password)
+#         user = authenticate(username=username, password=password)
 
-        if user:
-            if user.is_active:
-                login(request, user)
-                return HttpResponseRedirect(reverse('treasurehunt:question'))
-            else:
-                return HttpResponse("ACCOUNT NOT ACTIVE")
-        else:
-            print("Someone tried to login and failed")
-            print("UserName : {} and password {} ".format(username, password))
-            messages.error(request, "Invalid Login Details!")
-            return render(request, 'treasurehunt/login.html')
-    else:
-        return render(request, 'treasurehunt/login.html')
+#         if user:
+#             if user.is_active:
+#                 login(request, user)
+#                 return HttpResponseRedirect(reverse('treasurehunt:question'))
+#             else:
+#                 return HttpResponse("ACCOUNT NOT ACTIVE")
+#         else:
+#             print("Someone tried to login and failed")
+#             print("UserName : {} and password {} ".format(username, password))
+#             messages.error(request, "Invalid Login Details!")
+#             return render(request, 'treasurehunt/login.html')
+#     else:
+#         return render(request, 'treasurehunt/login.html')
 
 def invalid_login(request):
     return render(request,'treasurehunt/invalidlogin.html')
