@@ -3,20 +3,22 @@
 {% block content %}
 
 <div class="l-grid__item l-grid__item--sticky">
+	 {% if user.is_authenticated %}
 	<div class="c-card u-bg--light-gradient u-text--dark">
 	  <div class="c-card__body">
 		<div class="u-display--flex u-justify--space-between">
 		  <div class="u-text--left">
 			<div class="u-text--small">My Rank</div>
-			<h2>3rd Place</h2>
+			<h2>{{rank}}</h2>
 		  </div>
 		  <div class="u-text--right">
 			<div class="u-text--small">My Score</div>
-			<h2>24</h2>
+			<h2>{{score}}</h2>
 		  </div>
 		</div>
 	  </div>
 	</div>
+	{% endif %}
 	<!-- <div class="c-card">
 	  <div class="c-card__body">
 		<div class="u-text--center" id="winner"></div>
@@ -40,10 +42,10 @@
 			  <div class="u-text--right u-text--small u-text--medium"># Points</div>
 			</div>
 		  </li>
-		  {% for x,y,z in user_name  %}
+		  {% for i,x,y,z in user_name  %}
 		  <li class="c-list__item">
 			<div class="c-list__grid">
-				<div class="c-flag c-place u-bg--transparent">1</div>
+				<div class="c-flag c-place u-bg--transparent">{{i}}</div>
 				<div class="c-media">
 					<div class="c-media__content">
 						<div class="c-media__title">{{x}}</div>
