@@ -12,7 +12,24 @@ import time
 from termcolor import colored
 
 def index(request):
-    return render(request, 'treasurehunt/index.html')
+    score=0
+    current_user = request.user
+    current_user1=str(current_user)
+    print()
+    if (current_user1=="AnonymousUser"):
+        return render(request, 'treasurehunt/index.html')
+    else:
+        try:
+
+            sc = models.Score.objects.get(user__exact=current_user)
+            score = sc.score
+        except:
+            score = models.Score()
+            score.user = current_user
+            score.save()
+            sc = models.Score.objects.get(user__exact=current_user)
+            score = sc.score
+        return render(request, 'treasurehunt/index.html', {'score': sc.score})
 
 
 def register(request):
@@ -111,6 +128,8 @@ def invalid_login(request):
 @login_required
 def user_logout(request):
     logout(request)
+
+
     return HttpResponseRedirect(reverse('treasurehunt:index'))
 
 
@@ -120,7 +139,7 @@ def question(request):
     question_fixed = [
         '0', '1', '2', '3', '4', '5', '6',
         '7', '8', '9', '10',
-        '11', '12', '13','14','15','16','17','18','19','20','21','22','23','24','25','26','27','28','29'  ]
+        '11', '12', '13','14' ]
 
     current_user = request.user
     try:
@@ -130,14 +149,18 @@ def question(request):
         score.user = current_user
         score.save()
         sc = models.Score.objects.get(user__exact=current_user)
+    try:
+        ans_fixed = models.AnswerChecker.objects.get(index__exact=sc.score)
+    except:
+        return render(request, 'treasurehunt/hunt_win.html', {'score': sc.score})
 
-    ans_fixed = models.AnswerChecker.objects.get(index__exact=sc.score)
+
     level = models.level.objects.get(l_number=sc.score+1)
     if sc.ban==True:
         return render(request, 'treasurehunt/banned.html',{'score':sc.score})
     else:
 
-        if sc.score == 20:
+        if int(sc.score) == 14 :
             return render(request, 'treasurehunt/hunt_win.html',{'score':sc.score})
         else:
             if request.method == 'POST':
@@ -186,20 +209,48 @@ def question(request):
 
 def leaderboard(request):
     leader = models.Score.objects.all().filter(ban=False).order_by('-score','timestamp')
-    
-    if len(leader) >= 10:
+
+    current_user = request.user
+
+
+    rank=0
+    current_user1 = str(current_user)
+    if (current_user1 == "AnonymousUser"):
         user_name = []
+        i=1
+
         for x in leader:
-            user_name.append((x.user.username, x.score,x.timestamp))
+
+            user_name.append((i,x.user.username, x.score,x.timestamp))
+            i+=1
+
         return render(request, 'treasurehunt/leaderboard.html', {
-            'user_name': user_name,
+            'user_name': user_name
         })
     else:
+        try:
+            sc = models.Score.objects.get(user__exact=current_user)
+
+        except:
+            score = models.Score()
+            score.user = current_user
+            score.save()
+            sc = models.Score.objects.get(user__exact=current_user)
         user_name = []
+        i = 1
+
         for x in leader:
-            user_name.append((x.user.username, x.score,x.timestamp))
+            print(x.user.username,current_user)
+            if (str(x.user.username) == current_user1):
+                rank = i
+
+            user_name.append((i,x.user.username, x.score,x.timestamp))
+            i+=1
+
+
+
         return render(request, 'treasurehunt/leaderboard.html', {
-            'user_name': user_name,
+            'user_name': user_name, 'score': sc.score,'rank' : rank
         })
 
 
