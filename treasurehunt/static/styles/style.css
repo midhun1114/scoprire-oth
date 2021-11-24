@@ -850,3 +850,10 @@ contact-from input, .contact-from textarea {
     margin-bottom: 14px;
     background: #f5f6fa;
 }
+
+input{
+color:white;
+background-color:#222;
+padding:5px;
+margin:5px;
+}

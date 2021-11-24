@@ -3,6 +3,14 @@ from django.contrib.auth.models import User
 import datetime
 from datetime import datetime
 # Create your models here.
+
+class userProfile(models.Model):
+    user  = models.OneToOneField(User,on_delete=models.CASCADE)
+    college = models.CharField(max_length=30,verbose_name="college name")
+    phone_number = models.CharField(max_length=13)
+    def __str__(self):
+       return self.user.username
+
 class Score(models.Model):
 
     user = models.OneToOneField(User, on_delete=models.CASCADE)

@@ -14,9 +14,17 @@ class UserForm(forms.ModelForm):
         fields = ('username', 'email', 'password', 'confirm_password')
 
 
+class ProfileForm(forms.ModelForm):
+    class Meta:
+        model = models.userProfile
+        # exclude = ['user',]
+        exclude = ['user',]
+
+
+
 class Answer(forms.ModelForm):
     answer = forms.CharField()
 
     class Meta():
         model = models.Answer
-        fields = ('answer', )
+        fields = ('answer',)

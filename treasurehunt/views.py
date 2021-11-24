@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render,redirect
 from . import forms
 # Create your views here.
 from treasurehunt import models
@@ -8,17 +8,30 @@ from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 import datetime
+from .forms import ProfileForm
 import time
 from termcolor import colored
 
+
+def prfile_page(request):
+    if request.method=="POST":
+        if not models.userProfile.objects.filter(user=request.user):
+            models.userProfile.objects.create(user=request.user, college = request.POST["college"], phone_number = request.POST["phone_number"])
+        return redirect("/")
+
+    return render(request,""'treasurehunt/profile.html',{"form":ProfileForm()})
+
 def index(request):
-    score=0
+    score = 0
     current_user = request.user
-    current_user1=str(current_user)
-    print()
-    if (current_user1=="AnonymousUser"):
+    current_user1 = str(current_user)
+
+    if (current_user1 == "AnonymousUser"):
         return render(request, 'treasurehunt/index.html')
+
     else:
+        if not models.userProfile.objects.all().filter(user=current_user):
+            return redirect("profile_complete/")
         try:
 
             sc = models.Score.objects.get(user__exact=current_user)
@@ -122,24 +135,24 @@ def user_login(request):
 #         return render(request, 'treasurehunt/login.html')
 
 def invalid_login(request):
-    return render(request,'treasurehunt/invalidlogin.html')
+    return render(request, 'treasurehunt/invalidlogin.html')
 
 
 @login_required
 def user_logout(request):
     logout(request)
 
-
     return HttpResponseRedirect(reverse('treasurehunt:index'))
 
 
 @login_required
 def question(request):
-
+    if not models.userProfile.objects.all().filter(user=request.user):
+        return redirect("/profile_complete/")
     question_fixed = [
         '0', '1', '2', '3', '4', '5', '6',
         '7', '8', '9', '10',
-        '11', '12', '13','14' ]
+        '11', '12', '13', '14']
 
     current_user = request.user
     try:
@@ -154,75 +167,71 @@ def question(request):
     except:
         return render(request, 'treasurehunt/hunt_win.html', {'score': sc.score})
 
-
-    level = models.level.objects.get(l_number=sc.score+1)
-    if sc.ban==True:
-        return render(request, 'treasurehunt/banned.html',{'score':sc.score})
+    level = models.level.objects.get(l_number=sc.score + 1)
+    if sc.ban == True:
+        return render(request, 'treasurehunt/banned.html', {'score': sc.score})
     else:
 
-        if int(sc.score) == 14 :
-            return render(request, 'treasurehunt/hunt_win.html',{'score':sc.score})
+        if int(sc.score) == 14:
+            return render(request, 'treasurehunt/hunt_win.html', {'score': sc.score})
         else:
             if request.method == 'POST':
                 question_form = forms.Answer(data=request.POST)
                 if question_form.is_valid():
                     ans = question_form.cleaned_data['answer']
-                    
 
                     if ans.lower() == ans_fixed.ans_value():
                         sc.score = sc.score + 1
                         sc.timestamp = datetime.datetime.now()
                         sc.save()
                         level.numuser = level.numuser + 1
-                        level.accuracy = round(level.numuser/(float(level.numuser + level.wrong)),2)
+                        level.accuracy = round(level.numuser / (float(level.numuser + level.wrong)), 2)
                         level.save()
-                        anslog='Level: '+str(sc.score+1) +' user: '+str(current_user)+' answer: '+str(ans)
-                        print(colored(anslog,'green'))
-                        return render(request, 'treasurehunt/level_transition.html',{'score':sc.score})
+                        anslog = 'Level: ' + str(sc.score + 1) + ' user: ' + str(current_user) + ' answer: ' + str(ans)
+                        print(colored(anslog, 'green'))
+                        return render(request, 'treasurehunt/level_transition.html', {'score': sc.score})
 
                     else:
-                        level.wrong=level.wrong+1
+                        level.wrong = level.wrong + 1
                         level.save()
-                        anslog='Level: '+str(sc.score+1) +' user: '+str(current_user)+' answer: '+str(ans)
-                        print(colored(anslog,'red'))
-                        return render(request, 'treasurehunt/level_fail.html',{'score':sc.score})
+                        anslog = 'Level: ' + str(sc.score + 1) + ' user: ' + str(current_user) + ' answer: ' + str(ans)
+                        print(colored(anslog, 'red'))
+                        return render(request, 'treasurehunt/level_fail.html', {'score': sc.score})
                 else:
-                    
+
                     return render(
                         request, 'treasurehunt/question.html', {
                             'question_form': question_form,
                             'score': sc.score,
                             'question_fixed': question_fixed[sc.score],
-                            'level':level
+                            'level': level
                         })
             else:
                 question_form = forms.Answer()
-            
+
             return render(
                 request, 'treasurehunt/question.html', {
                     'question_form': question_form,
                     'score': sc.score,
                     'question_fixed': question_fixed[sc.score],
-                    'level':level
+                    'level': level
                 })
 
 
 def leaderboard(request):
-    leader = models.Score.objects.all().filter(ban=False).order_by('-score','timestamp')
+    leader = models.Score.objects.all().filter(ban=False).order_by('-score', 'timestamp')
 
     current_user = request.user
 
-
-    rank=0
+    rank = 0
     current_user1 = str(current_user)
     if (current_user1 == "AnonymousUser"):
         user_name = []
-        i=1
+        i = 1
 
         for x in leader:
-
-            user_name.append((i,x.user.username, x.score,x.timestamp))
-            i+=1
+            user_name.append((i, x.user.username, x.score, x.timestamp))
+            i += 1
 
         return render(request, 'treasurehunt/leaderboard.html', {
             'user_name': user_name
@@ -240,19 +249,16 @@ def leaderboard(request):
         i = 1
 
         for x in leader:
-            print(x.user.username,current_user)
+            print(x.user.username, current_user)
             if (str(x.user.username) == current_user1):
                 rank = i
 
-            user_name.append((i,x.user.username, x.score,x.timestamp))
-            i+=1
-
-
+            user_name.append((i, x.user.username, x.score, x.timestamp))
+            i += 1
 
         return render(request, 'treasurehunt/leaderboard.html', {
-            'user_name': user_name, 'score': sc.score,'rank' : rank
+            'user_name': user_name, 'score': sc.score, 'rank': rank
         })
 
-
-#t = Score.objects.all().order_by('-score')
+# t = Score.objects.all().order_by('-score')
 # t[0].user.username

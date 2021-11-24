@@ -2,6 +2,8 @@
 
 body.login {
     background: #f8f8f8;
+    display:flex;
+
 }
 
 .login #header {
