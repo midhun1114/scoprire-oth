@@ -150,7 +150,7 @@ def question(request):
     if not models.userProfile.objects.all().filter(user=request.user):
         return redirect("/profile_complete/")
     question_fixed = [
-        'ama.jpg', 'ana.jpg', 'nth.jpg', 'mid.jpg', 'ala.jpeg',
+        'coming.jpg', 'ana.jpg', 'nth.jpg', 'mid.jpg', 'ala.jpeg',
         'and.jpg', 'mhd.jpg','shf.jpeg', 'nsh.jpg', 'pry.jpeg',
         'anj.png','nna.png', 'sru.png', 'iry.jpg', 'ren.jpeg',
         'aar.png', 'any.jpeg', 'scr.jpeg','dac.png', 'nat.jpg',
