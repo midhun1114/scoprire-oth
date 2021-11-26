@@ -149,6 +149,7 @@ def user_logout(request):
 def question(request):
     if not models.userProfile.objects.all().filter(user=request.user):
         return redirect("/profile_complete/")
+#     ama.jpg
     question_fixed = [
         'coming.jpg', 'ana.jpg', 'nth.jpg', 'mid.jpg', 'ala.jpeg',
         'and.jpg', 'mhd.jpg','shf.jpeg', 'nsh.jpg', 'pry.jpeg',
