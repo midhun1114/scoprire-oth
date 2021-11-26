@@ -150,9 +150,11 @@ def question(request):
     if not models.userProfile.objects.all().filter(user=request.user):
         return redirect("/profile_complete/")
     question_fixed = [
-        '0', '1', '2', '3', '4', '5', '6',
-        '7', '8', '9', '10',
-        '11', '12', '13', '14']
+        'ama.jpg', 'ana.jpg', 'nth.jpg', 'mid.jpg', 'ala.jpeg',
+        'and.jpg', 'mhd.jpg','shf.jpeg', 'nsh.jpg', 'pry.jpeg',
+        'anj.png','nna.png', 'sru.png', 'iry.jpg', 'ren.jpeg',
+        'aar.png', 'any.jpeg', 'scr.jpeg','dac.png', 'nat.jpg',
+        'kat.jpeg','leo.jpeg', 'kev.jpg', 'rob.jpeg','clo.jpeg']
 
     current_user = request.user
     try:
@@ -172,7 +174,7 @@ def question(request):
         return render(request, 'treasurehunt/banned.html', {'score': sc.score})
     else:
 
-        if int(sc.score) == 14:
+        if int(sc.score) >= 25:
             return render(request, 'treasurehunt/hunt_win.html', {'score': sc.score})
         else:
             if request.method == 'POST':
@@ -230,6 +232,7 @@ def leaderboard(request):
         i = 1
 
         for x in leader:
+            # up = models.userProfile.objects.get(user=x.user.username)
             user_name.append((i, x.user.username, x.score, x.timestamp))
             i += 1
 
@@ -249,7 +252,8 @@ def leaderboard(request):
         i = 1
 
         for x in leader:
-            print(x.user.username, current_user)
+            # print(x.user.username, current_user)
+            # up = models.userProfile.objects.get(user =x.user.username)
             if (str(x.user.username) == current_user1):
                 rank = i
 
