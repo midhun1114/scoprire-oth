@@ -13,6 +13,7 @@ import time
 from termcolor import colored
 
 
+
 def prfile_page(request):
     if request.method=="POST":
         if not models.userProfile.objects.filter(user=request.user):
@@ -266,3 +267,24 @@ def leaderboard(request):
 
 # t = Score.objects.all().order_by('-score')
 # t[0].user.username
+
+def rules(request):
+    score = 0
+    current_user = request.user
+    current_user1 = str(current_user)
+
+    if (current_user1 == "AnonymousUser"):
+        return render(request, 'treasurehunt/rules.html')
+
+    else:
+        try:
+
+            sc = models.Score.objects.get(user__exact=current_user)
+            score = sc.score
+        except:
+            score = models.Score()
+            score.user = current_user
+            score.save()
+            sc = models.Score.objects.get(user__exact=current_user)
+            score = sc.score
+        return render(request, 'treasurehunt/rules.html', {'score': sc.score})

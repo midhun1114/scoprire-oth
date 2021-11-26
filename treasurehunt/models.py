@@ -45,3 +45,4 @@ class AnswerChecker(models.Model):
 
     def ans_value(self):
         return self.answer
+
