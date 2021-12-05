@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.sites',
     'admin_honeypot',
+    'csvexport',
     'treasurehunt',
     'pwa',
     'allauth', 

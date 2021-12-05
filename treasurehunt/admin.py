@@ -1,13 +1,32 @@
+from csvexport.actions import csvexport
 from django.contrib import admin
-from treasurehunt.models import Score, AnswerChecker,level,userProfile
 from django.contrib.admin.models import LogEntry
+from django.contrib.auth.models import User
+
+from treasurehunt.models import Score, AnswerChecker, level, userProfile
 
 # Register your models here.
 admin.site.register(Score)
 admin.site.register(AnswerChecker)
 admin.site.register(level)
-admin.site.register(userProfile)
 
+
+@admin.register(userProfile)
+class userProfile(admin.ModelAdmin):
+    list_display = [
+        'college', 'phone_number', 'user'
+    ]
+    actions = [csvexport, ]
+
+admin.site.unregister(User)
+
+@admin.register(User)
+class UserAdmin(admin.ModelAdmin):
+    list_display = [
+        'username'
+    ]
+
+    actions = [csvexport, ]
 
 
 @admin.register(LogEntry)
